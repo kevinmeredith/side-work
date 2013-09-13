@@ -1,6 +1,9 @@
-trait Either[+E, +A] {
+sealed trait Either[+E, +A] {
 	def map[B](f: A => B): Either[E, B] =  this match {
-		case Either(x: E, y: A) => Right(f(y))
-		case _ => Left()
+		case Right(y) => Right(f(y))
+		case Left(e) => Left(e)
 	}
 }
+
+case class Left[+E](err: E) extends Either[E,Nothing]
+case class Right[+E](msg: E) extends Either[Nothing,E]
