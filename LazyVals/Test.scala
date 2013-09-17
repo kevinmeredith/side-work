@@ -1,3 +1,5 @@
+// Code from "Functional Programming in Scala"
+// @Kevin added the `toList` method
 sealed abstract class Stream[+A] {
 	def uncons: Option[Cons[A]]
 	def isEmpty: Boolean = uncons.isEmpty
@@ -5,16 +7,9 @@ sealed abstract class Stream[+A] {
 		if (isEmpty) Nil
 		else {
 			uncons match { 
-				case Some(x) => f(x)
+				case Some(x: Cons[A]) => x.head :: x.tail
 				case _ => Nil
 			}
-		}
-	}
-
-	private def f[A](x: Cons[A]) : List[A] = {
-		def go(x: Cons[A], list: List[A]): List[A] = x match {
-			case x :: xs => go(xs, list ++ List(x))
-			case _ => list
 		}
 	}
 }
