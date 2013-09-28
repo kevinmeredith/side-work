@@ -2,6 +2,9 @@ trait RNG {
 	def nextInt: (Int, RNG)
 }
 
+// @author: `Functional Programming in Scala` 
+// www.manning.com/bjarnason/
+
 object RNG {
 	def simple(seed: Long): RNG = new RNG {
 		def nextInt: (Int, RNG) = {
