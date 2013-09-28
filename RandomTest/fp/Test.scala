@@ -16,6 +16,7 @@ object Test {
   		list.map(x => verify(x))  		
 	}
 
+	// Source: www.manning.com/bjarnason/
 	// EXERCISE 1: Write a function that uses RNG.nextInt to generate 
 	// a random positive integer. Make sure to handle the corner case 
 	// when nextInt returns Int.MinValue, which doesn't have a positive 
