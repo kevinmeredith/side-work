@@ -12,12 +12,13 @@ object Test {
 	def getCompanyValue(company: Company): Int = {
 
 	  val valuesList = for {
-	    branch     <- company.branches      
-	    consultant <- branch.consultants
-	    customer   <- consultant.portfolio
-	  } yield (customer.value)
+	    branch     <- company.branches     // fllatens company
+	    consultant <- branch.consultants   // flattens branch
+	    customer   <- consultant.portfolio // flattens consultant
+	  } yield (customer.value)             // maps across all `Customer`'s of every portfolio in 
+	                                       // all branches of the entire company
 
-	  valuesList reduce (_ + _)
+	  valuesList reduce (_ + _)            // reduces List[Int] -> Int, adding together each customer.value
 	}
 
 	def main(args: Array[String]) = {
