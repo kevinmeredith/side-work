@@ -1,3 +1,8 @@
+/**
+ * Working through exercise posted on Stackoverflow: 
+ * http://stackoverflow.com/questions/14598990/confused-with-the-for-comprehension-to-flatmap-map-transformation
+ */
+
 object Test {
 	case class Customer(value: Int)
 	case class Consultant(portfolio: List[Customer])
