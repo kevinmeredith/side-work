@@ -3,6 +3,7 @@
 // types of input: You can insert a coin, or you can turn the knob to dispense candy. It
 // can be in one of two states: locked or unlocked. It also tracks how many candies
 // are left and how many coins it contains.
+// source - http://www.manning.com/bjarnason/
 
 object CandyMachine {
 	sealed trait Input
