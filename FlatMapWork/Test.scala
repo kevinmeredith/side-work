@@ -7,7 +7,7 @@ object Test {
 	def getCompanyValue(company: Company): Int = {
 
 	  val valuesList = for {
-	    branch     <- company.branches
+	    branch     <- company.branches      
 	    consultant <- branch.consultants
 	    customer   <- consultant.portfolio
 	  } yield (customer.value)
@@ -21,9 +21,7 @@ object Test {
 		val customer3 = Customer(3)
 
 		val consultant1 = Consultant(List(customer1, customer2, customer3))
-
 		val branch = Branch(List(consultant1))
-
 		val company = Company(List(branch))
 
 		println("getCompanyValue(company) : " + getCompanyValue(company))
