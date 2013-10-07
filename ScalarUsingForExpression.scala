@@ -2,9 +2,8 @@ object ScalarUsingForExpression  {
 	
 	def scalarProduct(xs: List[Double], ys: List[Double]) : Double = {
 		val result = for {
-			x <- xs
-			y <- ys
-		} yield (x*y)
+			(x, y) <- xs.zip(ys)
+		} yield (x * y)
 		println(result)
 		result.foldRight(0.0)(_ + _)
 	}
@@ -14,7 +13,7 @@ object ScalarUsingForExpression  {
 		val ys = List(1.0, 1.0, 1.0)
 
 		println("scalarProduct(xs, ys) : " + scalarProduct(xs, ys))
-		//assert(scalarProduct(xs, ys) == 6)
+		assert(scalarProduct(xs, ys) == 6)
 	}
 
 }
