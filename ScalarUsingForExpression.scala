@@ -1,3 +1,5 @@
+// Implement scalar multiplication using for expressions.
+// An exercise from Martin Oderksy's "Functional Programming Principles in Scala"
 object ScalarUsingForExpression  {
 	
 	def scalarProduct(xs: List[Double], ys: List[Double]) : Double = {
