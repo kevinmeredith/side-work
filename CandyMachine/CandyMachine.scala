@@ -10,10 +10,13 @@ object CandyMachine {
 	case object Coin extends Input
 	case object Turn extends Input
 
+ 	type State[S, +A] = S => (A,S)
+
 	case class Machine(locked: Boolean, candies: Int, coins: Int)
 
 	def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = {
-
+		val machine = Machine(true, 10, 0)
+		State[]
 	}
 
 	def main(args: Array[String]) {
