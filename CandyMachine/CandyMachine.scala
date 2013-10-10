@@ -36,7 +36,7 @@ object CandyMachine {
 								case Coin if(m.candies > 0) => go(xs, Machine(false, m.candies, m.coins + 1))
 								case _ => go(xs, m)
 			}
-			case Nil => State[m, (m.coins, m.candies)]
+			case Nil => (mach: Machine) => ((mach.coins, mach.candies), mach) 
 		}
 		go(inputs, machine)
 	}
@@ -44,5 +44,6 @@ object CandyMachine {
 	def main(args: Array[String]) {
 		val inputs = List(Turn)
 		val res = simulateMachine(inputs)
+		println(res)
 	}
 }
