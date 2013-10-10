@@ -1,11 +1,14 @@
 object Test {
-	
   	def main(args: Array[String]) {
 		val list = (-1000 to 5000).toList
 		val rng = RNG.simple(42)
-		val (results, rng2) = ints(10)(rng)
+		//val (results, rng2) = ints(10)(rng)
 
-		println("results: " + results)
+		val (r, rng2) = doubleMap
+		println("r: " + r)
+
+		println("doubleMap: " + doubleMap)
+		println("positiveEven: " + positiveEven)
 
 		//val((i,d), rng2) = intDouble(rng)
 		//println("i: " + i + ", d: " + d)
@@ -71,4 +74,19 @@ object Test {
 		}
 		go(count, rng, List[Int]())
 	}
+
+	type Rand[+A] = RNG => (A, RNG)
+
+	def map[A, B](s: Rand[A])(f: A => B): Rand[B] = 
+		rng => {
+			val (a, rng2) = s(rng)
+			(f(a), rng2)
+		}
+
+	def positiveEven: Rand[Int] = 
+		map(positiveInt)(i => i - i % 2)
+	
+	// EXERCISE 5: Use map to reimplement RNG.double in a more elegant way.
+	def doubleMap: Rand[Double] = 
+		map(double)(i => i)
 }
