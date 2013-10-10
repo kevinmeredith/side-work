@@ -24,6 +24,7 @@ object CandyMachine {
 	case object Turn extends Input
 
  	type State[S, +A] = S => (A,S)
+ 	//type CState[Machine] = State[Machine, (Int, Int)]
 
 	case class Machine(locked: Boolean, candies: Int, coins: Int)
 
