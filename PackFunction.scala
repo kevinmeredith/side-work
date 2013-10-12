@@ -4,7 +4,6 @@ object PackFunction {
 	def pack[T](xs: List[T]): List[List[T]] = {
 		def go[T](ys: List[T], acc: List[List[T]]) : List[List[T]] = ys match {
 			case Nil => acc
-			//case x :: xs_ if(x.isEmpty) => go(xs_, acc)
 			case x :: xs_ => val r: List[T] = ys.takeWhile(a => a == x)
 							 go(ys.drop(r.length), acc :+ r)
 		}
