@@ -1,3 +1,4 @@
+// Work from Functional Programming Principles in Scala from Odersky
 object MapWork {
 	def squareList(xs: List[Int]) : List[Int] = xs match {
 		case Nil => xs
