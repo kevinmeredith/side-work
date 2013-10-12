@@ -15,6 +15,9 @@ object PackFunction {
 		val list = List("a", "a", "a", "b", "b", "c", "c", "c", "a")
 		val r = pack(list)
 		println("r : " + r)
+
+		val r2 = pack(List("a", "a", "b", "b", "c", "a"))
+		println("r2: " + r2)
 	}
 
 }
