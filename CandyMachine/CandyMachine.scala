@@ -45,6 +45,6 @@ object CandyMachine {
 	def main(args: Array[String]) {
 		val inputs = List(Turn)
 		val res = simulateMachine(inputs)
-		println(res)
+		println( res(Machine(false, 0, 0)) )     // returns ((0,0),Machine(false,0,0))
 	}
 }
