@@ -33,9 +33,9 @@ object CandyMachine {
 		
 		def go(inps: List[Input], m: Machine) : State[Machine, (Int, Int)] = inps match {
 			case x :: xs => x match {
-								case Turn if(m.locked == false && m.candies > 0) => go(xs, Machine(true, m.candies - 1, m.coins))
-								case Coin if(m.candies > 0) => go(xs, Machine(false, m.candies, m.coins + 1))
-								case _ => go(xs, m)
+					case Turn if(m.locked == false && m.candies > 0) => go(xs, Machine(true, m.candies - 1, m.coins))
+					case Coin if(m.candies > 0) => go(xs, Machine(false, m.candies, m.coins + 1))
+					case _ => go(xs, m)
 			}
 			case Nil => (mach: Machine) => ((mach.coins, mach.candies), mach) 
 		}
