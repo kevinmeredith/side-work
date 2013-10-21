@@ -1,6 +1,13 @@
-package monoid
 // A monoid is a type together with an associative binary operation(op) which has an identity element(zero).
-object MonoidTesting1 {
+object MonoidTesting {
+	def main(args: Array[String]) = {
+
+		val words = List("Hic", "Est", "Barbarus")
+
+		println("foldLeft: " + words.foldLeft(stringMonoid.zero)(stringMonoid.op))
+		println("foldRight: " + words.foldRight(stringMonoid.zero)(stringMonoid.op))
+	}
+
 	trait Monoid[A] {
 		def op(a1: A, a2: A): A
 		def zero: A
@@ -20,7 +27,7 @@ object MonoidTesting1 {
 	// Boolean operators. "FP in Scala"
 	val intAddition = new Monoid[Int] {
 		def op(a1: Int, a2: Int) = a1 + a2
-		val zero = ""
+		val zero = 0
 	}
 
 	val intMultiplication = new Monoid[Int] {
