@@ -12,9 +12,16 @@ object MonoidTesting {
 		println("fr: " + fr)
 		assert(fr == "HicEstBarbarus")
 		
+		// testing trimMonoid
 		val res = trimMonoid.op( ("Hic"), (trimMonoid.op("est ", "chorda ")) )
 		println("res : " + res)
 		assert(res == "Hic est chorda")
+
+		// testing concatenation monad
+		val str = List("Hello", "World")
+		val resStr = concatenate(str, concatMonad)
+		println("resStr: " + resStr)
+		assert(resStr == "HelloWorld")
 
 		println("success")
 	}
@@ -43,7 +50,7 @@ object MonoidTesting {
 
 	val intMultiplication = new Monoid[Int] {
 		def op(a1: Int, a2: Int) = a1 * a2
-		val zero = 0
+		val zero = 1
 	}
 
 	val booleanOr = new Monoid[Boolean] {
@@ -53,7 +60,7 @@ object MonoidTesting {
 	
 	val booleanAnd = new Monoid[Boolean] {
 		def op(a1: Boolean, a2: Boolean) = a1 || a2
-		val zero = false
+		val zero = true
 	}
 
 
@@ -68,21 +75,25 @@ object MonoidTesting {
 	//def trimMonoid(s: String): Monoid[String] = {
 
 	// EXERCISE 2: Give a Monoid instance for combining Options:
-	/*def optionMonoid[A](implicit aMonoid:Monoid[A]) = new Monoid[Option[A]] {
+	def optionMonoid[A](implicit aMonoid:Monoid[A]) = new Monoid[Option[A]] {
 		def op(a1: Option[A], a2: Option[A]) = (a1, a2) match {
 			case (Some(x), Some(y)) => Some(aMonoid.op(x, y))
 			case _ => None
 		}
 		val zero = // op(x, zero) === x === op(zero, x) 
-	}*/
+	}
 
 	// EXERCISE 6: Implement concatenate, a function that folds a list with a
 	// monoid:
-	def concatenate[A](as: List[A], m: Monoid[A]): A = {
-		def go(xs: List[A], acc: A): A = xs match {
+	def concatenate[A](as: List[A], m: Monoid[A]): A = as.foldLeft(m.zero)((s, i) => m.op(s, i))
+	/*	def go(xs: List[A], acc: A): A = xs match {
 			case y :: ys => go(ys, m.op(acc, y))
 			case Nil => acc
 		}
-		go(as, Nil)
+		go(as, Nil)*/
+
+	val concatMonad = new Monoid[String] {
+		def op(a1: String, a2: String) = a1 + a2
+		def zero = ""
 	}
 }
