@@ -23,6 +23,18 @@ object MonoidTesting {
 		println("resStr: " + resStr)
 		assert(resStr == "HelloWorld")
 
+		// test foldMap
+		val ints = List(1, 2, 3)
+		val strs = foldMap(ints, concatMonad)( (x: Int) => x.toString)
+		println(strs)
+		assert(strs == "123")
+
+		//def foldMapRight[A, B](as: List[A], m: Monoid[B])(z: B)(f: (A, B) => B): B = {		
+		val stringInts = List("1", "2", "3")
+		val resFoldMap = foldMapRight(stringInts, intAddition)(intAddition.zero)((s, i) => intAddition.op(s.toInt, i))
+		println("resFoldMap: " + resFoldMap)
+		assert(resFoldMap == 6)
+
 		println("success")
 	}
 
@@ -75,25 +87,40 @@ object MonoidTesting {
 	//def trimMonoid(s: String): Monoid[String] = {
 
 	// EXERCISE 2: Give a Monoid instance for combining Options:
-	def optionMonoid[A](implicit aMonoid:Monoid[A]) = new Monoid[Option[A]] {
+	/*def optionMonoid[A](implicit aMonoid:Monoid[A]) = new Monoid[Option[A]] {
 		def op(a1: Option[A], a2: Option[A]) = (a1, a2) match {
 			case (Some(x), Some(y)) => Some(aMonoid.op(x, y))
 			case _ => None
 		}
 		val zero = // op(x, zero) === x === op(zero, x) 
-	}
+	}*/
 
 	// EXERCISE 6: Implement concatenate, a function that folds a list with a
 	// monoid:
-	def concatenate[A](as: List[A], m: Monoid[A]): A = as.foldLeft(m.zero)((s, i) => m.op(s, i))
-	/*	def go(xs: List[A], acc: A): A = xs match {
-			case y :: ys => go(ys, m.op(acc, y))
-			case Nil => acc
-		}
-		go(as, Nil)*/
+	def concatenate[A](as: List[A], m: Monoid[A]): A = 
+		as.foldLeft(m.zero)((s, i) => m.op(s, i))
 
 	val concatMonad = new Monoid[String] {
 		def op(a1: String, a2: String) = a1 + a2
 		def zero = ""
+	}
+
+	// But what if our list has an element type that doesn't have a Monoid instance?
+	// Well, we can always map over the list to turn it into a type that does.
+	def foldMap[A, B](as: List[A], m: Monoid[B])(f: A => B): B = {
+		val bs = as.map(f)
+		bs.foldLeft(m.zero)((s, i) => m.op(s, i))
+	}
+
+	// EXERCISE 8 (hard): The foldMap function can be implemented using either
+	// foldLeft or foldRight. But you can also write foldLeft and foldRight
+	// using foldMap! Try it.
+	// def foldRight[B](z: B)(op: (A, B) => B): B
+	def foldMapRight[A, B](as: List[A], m: Monoid[B])(z: B)(f: (A, B) => B): B = {
+		def go(ys: List[A], acc: B) : B = ys match {
+			case x :: xs => go(xs, f(x, acc))
+			case Nil => acc
+		}
+		go(as, z)
 	}
 }
