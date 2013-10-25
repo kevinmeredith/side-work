@@ -8,7 +8,15 @@ object LazyEvaluationWork {
 		// print output: x z y z
 	}
 
+	
+	def expr2 = {
+		def f = { print("foo");  5}
+		val x = f
+		print("after x's definition")
+		x
+	}
+
 	def main(args: Array[String]) = { 
-		expr
+		println(expr2) // prints "fooafter x's definition5"
 	}
 }
