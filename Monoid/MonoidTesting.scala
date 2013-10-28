@@ -1,5 +1,9 @@
-// A monoid is a type together with an associative binary operation(op) which has an identity element(zero).
+// A monoid is a type together with an associative binary operation(op) 
+// which has an identity element(zero). -"Functional Programming in Scala"
 object MonoidTesting {
+	// TODO: Figure out Monoid[Option], ordered, as well as foldMapRight/Left
+	implicit val m: Monoid[Int] = intAddition
+
 	def main(args: Array[String]) = {
 
 		val words = List("Hic", "Est", "Barbarus")
@@ -41,8 +45,14 @@ object MonoidTesting {
 		println(r)
 		assert(r == 10)
 
+		// testing OptionMonoid
+		val opts: List[Option[Int]] = List(Some(1), Some(2), None, Some(5))
+		val resOpts = opts.foldLeft(optionMonoid.zero)(optionMonoid.op)
+		println(resOpts)
+		assert(resOpts == Some(8))
+
 		// testing foldMap if IndexedSeq[Int] is ordered
-		val seqInt = IndexedSeq("1","2","3","4")
+		/*val seqInt = IndexedSeq("1","2","3","4")
 		val isOrdered = foldMapV(seqInt, ordered)(x => x.toInt)
 		println(isOrdered)
 		assert(isOrdered == true)
@@ -50,7 +60,7 @@ object MonoidTesting {
 		val seqInt2 = IndexedSeq("4", "3", "2", "1")
 		val isOrdered2 = foldMapV(seqInt2, ordered)(x => x.toInt)
 		println(isOrdered2)
-		assert(isOrdered2 == false)
+		assert(isOrdered2 == false)*/
 
 		println("success")
 	}
@@ -59,14 +69,6 @@ object MonoidTesting {
 		def op(a1: A, a2: A): A
 		def zero: A
 	}
-
-	// EXERCISE 10 (hard): Use to detect foldMap whether a given
-	// IndexedSeq[Int] is ordered. You will need to come up with a creative
-	// Monoid.
-	/*val ordered = new Monoid[Boolean] = {
-		def op(a1: Int, a2: Int) = if(a1 < a2) true else false
-		val zero = true
-	}*/
 
 	val stringMonoid = new Monoid[String] {
 		def op(a1: String, a2: String) = a1 + a2
@@ -108,20 +110,22 @@ object MonoidTesting {
 		def op(a1: String, a2: String) = a1.trim + " " + a2.trim
 		val zero = ""
 	}
-	
+
 	// EXERCISE 2: Give a Monoid instance for combining Options:
-	/*def optionMonoid[A](implicit aMonoid:Monoid[A]) = new Monoid[Option[A]] {
+	def optionMonoid[A](implicit m: Monoid[A]) = new Monoid[Option[A]] {
 		def op(a1: Option[A], a2: Option[A]) = (a1, a2) match {
-			case (Some(x), Some(y)) => Some(aMonoid.op(x, y))
-			case _ => None
+			case (Some(x), Some(y)) => Some(m.op(x, y))
+			case (Some(x), _) => Some(m.op(x, m.zero))
+			case (_, Some(y)) => Some(m.op(m.zero, y))
+			case _ => Some(m.zero)
 		}
-		val zero = // op(x, zero) === x === op(zero, x) 
-	}*/
+		val zero = None
+	}
 
 	// EXERCISE 6: Implement concatenate, a function that folds a list with a
 	// monoid:
 	def concatenate[A](as: List[A], m: Monoid[A]): A = 
-		as.foldLeft(m.zero)((s, i) => m.op(s, i))
+		as.foldLeft(m.zero)(m.op)
 
 	val concatMonad = new Monoid[String] {
 		def op(a1: String, a2: String) = a1 + a2
@@ -161,4 +165,12 @@ object MonoidTesting {
 		val (a: List[B], b: List[B]) = as.splitAt(as.length / 2)
 		m.op(go(a, m.zero), go(b, m.zero))
 	}
+
+	// EXERCISE 10 (hard): Use to detect foldMap whether a given
+	// IndexedSeq[Int] is ordered. You will need to come up with a creative
+	// Monoid. *Incomplete*
+	/*val ordered = new Monoid[Int] = {
+		def op(a1: Int, a2: Int) = if(a1 <= a2) a2 else Int.MaxValue 
+		val zero = Int.MinValue
+	}*/
 }
