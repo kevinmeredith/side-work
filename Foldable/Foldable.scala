@@ -1,20 +1,48 @@
-trait Foldable[F[_]] {
-	def foldRight[A, B](as: F[A])(f: (A, B) => B): B
-	def foldLeft[A, B](as: F[A])(f: (B, A) => B): B
-	def foldMap[A, B](as: F[A])(f: A => B)(mb: Monoid[B]): B
-	def concatenate[A](as: F[A])(m: Monoid[A]): A = foldLeft(as)(m.zero)(m.op)
+trait Monoid[A] {
+  def op(a1: A, a2: A): A
+  def zero: A
 }
 
-trait Foldable[List[_]] {
-	def foldRight[A, B](as: List[A])(f: (A, B) => B): B = foldLeft(as.reverse)((s, i) => f(s, i))
-	def foldLeft[A,B](as: List[A])(f: (A, B) => B): B = {
-		go(bs: List[A], acc: B): B = bs match {
-			case x :: xs => go(xs, f(x, acc))
+trait Foldable[F[_]] {
+  def foldRight[A, B](as: F[A])(z: B)(f: (A, B) => B): B
+  def foldLeft[A, B](as: F[A])(z: B)(f: (B, A) => B): B 
+  def foldMap[A, B](as: F[A])(f: A => B)(mb: Monoid[B]): B 
+  def concatenate[A](as: F[A])(m: Monoid[A]): A 
+}
+
+object ListFoldable extends Foldable[List] {
+	override def foldRight[A, B](as: List[A])(z: B)(f: (A, B) => B): B = foldLeft(as.reverse)(z)((i, s) => f(s, i))
+	override def foldLeft[A, B](as: List[A])(z: B)(f: (B, A) => B): B  = {
+		def go(bs: List[A], acc: B): B = bs match {
+			case x :: xs => go(xs, f(acc, x))
 			case Nil => acc
 		}
-	go(as, ???)
+		go(as, z)
 	}
-	def foldMap[A, B](as: List[A])(f: A => B)(mb: Monoid[B]): B = {
-		as.map(f).foldLeft(mb.zero)(mb.op)
+	override def foldMap[A, B](as: List[A])(f: A => B)(mb: Monoid[B]): B = {
+		val bs = as.map(f)
+		foldLeft(bs)(mb.zero)(mb.op)
+	}
+	override def concatenate[A](as: List[A])(m: Monoid[A]): A = as.foldLeft(m.zero)(m.op)
+}
+
+object FoldableTest { 
+	
+	val intAddition = new Monoid[Int] {
+		def op(a1: Int, a2: Int) = a1 + a2
+		val zero = 0
+	}
+
+	def main(args: Array[String]) = {
+		val list = List(1,2,3,4,5)
+
+		val listStr = List("1", "2", "3", "4", "5")
+		assert(ListFoldable.foldRight(list)(0)((s, i) => s + i) == 15)
+		assert(ListFoldable.foldLeft(list)(0)((i, s) => i + s) == 15)
+		assert(ListFoldable.foldMap(listStr)(x => x.toInt)(intAddition) == 15)
+		//assert(ListFoldable.concatenate())
+
+		println("success")
 	}
 }
+
