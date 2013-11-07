@@ -67,12 +67,23 @@ object IndexedSeqFoldable extends Foldable[IndexedSeq] {
 object StreamFoldable extends Foldable[Stream] {
   def foldRight[A, B](as: Stream[A])(z: B)(f: (A, B) => B): B = sys.error("todo")
   def foldLeft[A, B](as: Stream[A])(z: B)(f: (B, A) => B): B  = {
-  	def go(bs: Stream[A], B) : B = bs match {
-  		
+  	def go(bs: Stream[A], acc: B) : B = bs match {
+  	   case x #:: xs => go(xs, f(acc, x))
+       case Stream() => acc
   	}
+    go(as, z)
   }
-  def foldMap[A, B](as: Stream[A])(f: A => B)(mb: Monoid[B]): B = sys.error("todo")
+  def foldMap[A, B](as: Stream[A])(f: A => B)(mb: Monoid[B]): B = {
+    foldLeft(as.map(f))(mb.zero)(mb.op)
+  }
   def concatenate[A](as: Stream[A])(m: Monoid[A]): A = sys.error("todo")
+}
+
+object OptionFoldable extends Foldable[Option] {
+  override def foldRight[A, B](as: Option[A])(z: B)(f: (A, B) => B): B = as.map(x => f(x, z))
+  override def foldLeft[A, B](as: Option[A])(z: B)(f: (B, A) => B): B = as.map(x => f(z, x))
+  override def foldMap[A, B](as: Option[A])(f: A => B)(mb: Monoid[B]): B = as.map(f).map(x => mb.op(x, mb.zero))
+  override def concatenate[A](as: Option[A])(m: Monoid[A]): A  = as.map(x => mb.op(x, m.zero))
 }
 
 object FoldableTest { 
@@ -105,6 +116,20 @@ object FoldableTest {
 		assert(IndexedSeqFoldable.foldLeftPM(indexedSeqInt)(0)((i, s) => i + s) == 6)
 		assert(IndexedSeqFoldable.foldRight(indexedSeqStr)(0)((s, i) => foo(s, i)) == 6)
 		println("success")
+
+    val someInt: Option[Int] = Some(1)
+    val optRes = OptionFoldable.foldLeft(someInt)(1)(_ + _)
+    assert(optRes == Some(2))
+
+    val noneInt: Option[Int] = None
+    val noneRes = OptionFoldable.foldLeft(noneInt)(1)(_ + _)
+    assert(noneRes == None)
+
+    val someStr: Option[String] = Some("2")
+    val strOptRes: Option[Int] = OptionFoldable.foldMap(someStr)(x => x.toInt)(intAddition)
+    assert(strOptRes == Some(2))
+
+    println("success")
 	}
 }
 
