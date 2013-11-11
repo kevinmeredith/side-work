@@ -80,10 +80,22 @@ object StreamFoldable extends Foldable[Stream] {
 }
 
 object OptionFoldable extends Foldable[Option] {
-  override def foldRight[A, B](as: Option[A])(z: B)(f: (A, B) => B): B = as.map(x => f(x, z))
-  override def foldLeft[A, B](as: Option[A])(z: B)(f: (B, A) => B): B = as.map(x => f(z, x))
-  override def foldMap[A, B](as: Option[A])(f: A => B)(mb: Monoid[B]): B = as.map(f).map(x => mb.op(x, mb.zero))
-  override def concatenate[A](as: Option[A])(m: Monoid[A]): A  = as.map(x => mb.op(x, m.zero))
+  override def foldRight[A, B](as: Option[A])(z: B)(f: (A, B) => B): B = as match {
+    case None => z
+    case Some(x) => f(x, z)
+  }
+  override def foldLeft[A, B](as: Option[A])(z: B)(f: (B, A) => B): B = as match {
+    case None => z
+    case Some(x) => f(z, x)
+  }
+  override def foldMap[A, B](as: Option[A])(f: A => B)(mb: Monoid[B]): B = as match {
+    case None => mb.zero
+    case Some(x) => f(x)
+  }
+  override def concatenate[A](as: Option[A])(m: Monoid[A]): A  = as match {
+    case None => m.zero
+    case Some(x) => m.op(x, m.zero)
+  }
 }
 
 object FoldableTest { 
