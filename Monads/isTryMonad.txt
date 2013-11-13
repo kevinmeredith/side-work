@@ -1,0 +1,36 @@
+Is Try a Monad?
+
+where unit = Try
+
+Associativity:
+
+
+// do the Left first
+
+(m flatMap f) flatMap g == m flatMap (x => f(x) flatMap g)
+
+Try(x) flatMap f 
+
+Try(x) match {
+	case Success(x) => try f(x) catch { case NonFatal(ex) => Failure(ex) }
+	case fail: Failure => fail
+}
+
+Try(x) match {
+	case Success(x) => try f(x) catch { case NonFatal(ex) => Failure(ex)} match {
+		case Success(y) => try g(y) catch { case NonFatal(ex) => Failure(ex)}
+		case fail: Failure => fail
+	}
+	case fail: Failure => fail 
+}
+
+Try(x).flatMap(x => f(x)).flatMap(y => g(y)) // Associativity true
+
+// Left unit
+
+unit(x) flatMap f == f(x) // true
+
+// Right unit 
+
+m flatMap unit == m // true, I think
+
