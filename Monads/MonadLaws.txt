@@ -1,0 +1,14 @@
+Monad Laws:
+
+Associativity:
+
+(m flatMap f) flatMap g == m flatMap (f flatMap g)
+
+Left Unit 
+
+unit(x) flatMap f == f(x)
+
+Right Unit
+
+m flatMap unit == m
+
