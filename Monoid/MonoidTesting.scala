@@ -135,8 +135,7 @@ object MonoidTesting {
 	// But what if our list has an element type that doesn't have a Monoid instance?
 	// Well, we can always map over the list to turn it into a type that does.
 	def foldMap[A, B](as: List[A], m: Monoid[B])(f: A => B): B = {
-		val bs = as.map(f)
-		bs.foldLeft(m.zero)((s, i) => m.op(s, i))
+		as.map(f).foldLeft(m.zero)(m.op)
 	}
 
 	// EXERCISE 8 (hard): The foldMap function can be implemented using either
@@ -173,4 +172,8 @@ object MonoidTesting {
 		def op(a1: Int, a2: Int) = if(a1 <= a2) a2 else Int.MaxValue 
 		val zero = Int.MinValue
 	}*/
+
+	// EXERCISE 3: A function having the same argument and return type is
+	// sometimes called an endofunction.2 Write a monoid for endofunctions:
+	// def endoMonoid[A]: Monoid[A => A]
 }
