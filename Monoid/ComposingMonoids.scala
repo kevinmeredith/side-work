@@ -41,6 +41,14 @@ object ComposingMonoids {
 				}
 		}
 
+	// EXERCISE 19: Write a monoid instance for functions whose results are
+	// monoids.
+	// KMM - need to return to this one
+	def functionMonoid[A, B](B: Monoid[B]): Monoid[A => B] = {
+
+	}
+
+
 	// Exercise 20: Use monoids to compute a "bag" from an IndexedSeq
 	//   scala> bag(Vector("a", "rose", "is", "a", "rose"))
 	//   res0: Map[String,Int] = Map(a -> 2, rose -> 2, is -> 1)
@@ -49,7 +57,7 @@ object ComposingMonoids {
 		as.foldLeft(Map[A, Int]())( (acc, el) =>
 								    if (acc.contains(el) ) {
 								        val x = acc.get(el).get
-								       acc + (el -> (x+1))
+								        acc + (el -> (x+1))
 								  	}
 								  	else { acc + (el -> 1) } )
 	}
@@ -58,7 +66,7 @@ object ComposingMonoids {
 	// Read the hint from pchiusano's github
 	def bagWithMonoids[A](as: IndexedSeq[A]): Map[A, Int] = {
 		val bagMonoid: Monoid[Map[A, Int]] = mapMergeMonoid(intAddition)
-		as.map(x => (x, 1)).foldLeft(Map[A, Int]())( (acc, element) => acc ++ bagMonoid.op(Map(element), acc))
+		as.map(x => Map(x -> 1)).foldLeft(bagMonoid.zero)((acc, elem) => acc ++ bagMonoid.op(elem, acc))
 	}
 
 	// Map("a" -> 1, "b" -> 1, "a" -> 1)
