@@ -1,0 +1,16 @@
+<head>
+	<script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+</head>
+<body ng-app="helloApp">
+	<div ng-controller="HelloCtrl">
+		<p>{{greeting}} {{person}}</p>
+        <input ng-model="person"/>
+    </div>
+	<script>
+		angular.module('helloApp')
+          .controller('HelloCtrl', function($scope) {
+			$scope.greeting = 'Hello';
+			$scope.person = 'World';
+		});
+	</script>
+</body>

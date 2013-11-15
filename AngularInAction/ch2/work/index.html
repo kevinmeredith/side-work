@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html ng-app="Angello">
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+	<link rel="stylesheet" src="app.js"></script>
+	<title>Angello Lite</title>
+</head>
+<body>
+	<div ng-controller="MainCtrl">
+		<div class="span4 sidebad-content">
+			<h2>Stories</h2>
+			<div class="story" ng-repeat="story in stories">
+				<h4>{{story.title}}</h4>
+				<p>{{story.description}}</p>
+			</div>
+		</div>
+	</div>
+</body>
