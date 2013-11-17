@@ -1,3 +1,4 @@
+// From Reactive Programming (Odersky course)
 abstract class Try[T] {
 	def flatMap[U](f: T => Try[U]): Try[U] this match {
 		case Success(x) => try f(x) catch { case NonFatal(ex) => Failure(ex) }
