@@ -8,22 +8,31 @@ trait Monad[F[_]] extends Functor[F] {
 
 	def map[A,B](ma: F[A])(f: A => B): F[B] = 
 		flatMap(ma)(a => unit(f(a)))
-	def map2[A, B, C](ma: F[A], mb: F[B])(f: (A,B) => C): F[C] = 
-		flatMap(ma)(a => map(mb)(b => f(a, b)))
+	def map2[A, B, C](ma: F[A], mb: F[B])(f: (A,B) => C): F[C] = {
+		println("map2 ma: " + ma + ", mb: " + mb)
+		val res = flatMap(ma)(a => map(mb)(b => f(a, b)))
+		println("res: " + res)
+		res
+	}
 
+	/*Wrong answer for sequence due to http://stackoverflow.com/a/20037817/409976
 	def sequence[A](lma: List[F[A]]): F[List[A]] = 
 		F(lma.flatten)
 
 	def traverse[A,B](la: List[A])(f: A => F[B]): F[List[B]] =
-		F(la.flatMap(f))
+		F(la.flatMap(f))*/
+
+	// official answer
+	def sequence[A](lma: List[F[A]]): F[List[A]] = 
+		lma.foldRight(unit(List[A]()))((ma, mla) => map2(ma, mla)(_ :: _))
 }
 
-/*object Monad {
-	val genMonad = new Monad[Gen] {
+object MonadTest {
+	/*val genMonad = new Monad[Gen] {
 		def unit[A](a: => A): Gen[A] = Gen.unit(a)
 		def flatMap[A, B](ma: Gen[A])(f: A => Gen[B]) = 
 			ma.flatMap(f)
-	}
+	}*/
 
 	val optionMonad = new Monad[Option] {
 		def unit[A](a: => A): Option[A] = Some(a)
@@ -43,8 +52,28 @@ trait Monad[F[_]] extends Functor[F] {
 			ma.flatMap(f)
 	}
 
-	val parMonad = new Monad[Par] {
+	def main(args: Array[String]) = {
+		val optUnit5 = optionMonad.unit(5)
+		println(optUnit5)
+		assert(optUnit5 == Some(5))
+
+		def foo(x: Int): Option[String] = Some(x.toString)
+		val optFlatMap = optionMonad.flatMap(Some(10))(foo)
+		println(optFlatMap)
+		val expected: Option[String] = Some("10")
+		assert(optFlatMap == expected)
+
+		val listOpts = List(Some(1), None, Some(2))
+		val seqRes = optionMonad.sequence(listOpts)
+		val expected2 = None
+		println(seqRes)
+		assert(seqRes == expected2)
+
+	}
+
+
+	/*val parMonad = new Monad[Par] {
 		def unit[A](a: => A) = Par.unit(a)
 		def flatMap[A, B](ma: Par[A])(f: A => Par[B]): Par[B] = Par.flatmap(ma)(f)
-	}
-}*/
+	}*/
+}
