@@ -1,9 +1,9 @@
 var myModule = angular.module('Angello', []);
 
 myModule.controller('MainCtrl', function($scope) { 
-	$scope.currentStory;
-	$scope.newStoryTitle;
-	$scope.newStoryDesc;
+	$scope.currentStory = null;
+	$scope.newStoryTitle = '';
+	$scope.newStoryDesc = '';
 
 	$scope.setCurrentStory = function(story) {
 		$scope.currentStory = story
@@ -26,7 +26,7 @@ myModule.controller('MainCtrl', function($scope) {
 			{title: 'Story 05', description: 'Description pending.'}
 		];
 
-	$scope.createStory = function(t, d) { 
+	$scope.addNewStory = function(t, d) { 
 		console.log("in create story");
 		const newStory = [{title: t, description: d}];
 		console.log("adding newStory: " + JSON.stringify(newStory));
