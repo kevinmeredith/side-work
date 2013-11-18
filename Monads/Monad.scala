@@ -9,22 +9,25 @@ trait Monad[F[_]] extends Functor[F] {
 	def map[A,B](ma: F[A])(f: A => B): F[B] = 
 		flatMap(ma)(a => unit(f(a)))
 	def map2[A, B, C](ma: F[A], mb: F[B])(f: (A,B) => C): F[C] = {
-		println("map2 ma: " + ma + ", mb: " + mb)
+		println("ma: " + ma + " , mb: " + mb)
 		val res = flatMap(ma)(a => map(mb)(b => f(a, b)))
 		println("res: " + res)
 		res
 	}
 
-	/*Wrong answer for sequence due to http://stackoverflow.com/a/20037817/409976
+	/*Wrong answerfor sequence due to http://stackoverflow.com/a/20037817/409976
 	def sequence[A](lma: List[F[A]]): F[List[A]] = 
 		F(lma.flatten)
 
 	def traverse[A,B](la: List[A])(f: A => F[B]): F[List[B]] =
 		F(la.flatMap(f))*/
 
-	// official answer
+	// official answer from @pchiusano
 	def sequence[A](lma: List[F[A]]): F[List[A]] = 
 		lma.foldRight(unit(List[A]()))((ma, mla) => map2(ma, mla)(_ :: _))
+
+	def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] =
+		la.foldRight(unit(List[B]()))((ma, mla) => map2(f(ma), mla)(_ :: _))
 }
 
 object MonadTest {
@@ -65,10 +68,14 @@ object MonadTest {
 
 		val listOpts = List(Some(1), None, Some(2))
 		val seqRes = optionMonad.sequence(listOpts)
-		val expected2 = None
+		val expected2 = None // having a `None` results in flatMap's call to return None for `acc` & total
 		println(seqRes)
 		assert(seqRes == expected2)
 
+		val listInt = List(3,2,1)
+		def bar(x: Int): Option[String] = Some(x.toString)
+		val traverseRes = optionMonad.traverse(listInt)(bar)
+		println(traverseRes)
 	}
 
 
