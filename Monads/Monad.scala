@@ -22,12 +22,22 @@ trait Monad[F[_]] extends Functor[F] {
 	def traverse[A,B](la: List[A])(f: A => F[B]): F[List[B]] =
 		F(la.flatMap(f))*/
 
+	// Exercise 3: implement sequence() and traverse
 	// official answer from @pchiusano
 	def sequence[A](lma: List[F[A]]): F[List[A]] = 
 		lma.foldRight(unit(List[A]()))((ma, mla) => map2(ma, mla)(_ :: _))
 
 	def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] =
 		la.foldRight(unit(List[B]()))((ma, mla) => map2(f(ma), mla)(_ :: _))
+
+	// Implement repliacateM
+	def replicateM[A](n: Int, ma: F[A]): F[List[A]] = {
+		def go(n_: Int, acc: F[List[A]]): F[List[A]] = n_ match {
+				case 0 => acc
+				case _ => go(n_-1, acc sequence()
+			}
+		}
+	}
 }
 
 object MonadTest {
