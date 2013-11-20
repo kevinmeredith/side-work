@@ -21,6 +21,7 @@ trait Monad[F[_]] extends Functor[F] {
 	def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] =
 		la.foldRight(unit(List[B]()))((ma, mla) => map2(f(ma), mla)(_ :: _))
 
+	// Simple predecessor to replicateM to help me understand how to write replicateM
 	def replicateOnce[A](ma: F[A]): F[List[A]] = {
 		map(ma)(x => List(x))
 	}
