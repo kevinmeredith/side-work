@@ -8,19 +8,10 @@ trait Monad[F[_]] extends Functor[F] {
 
 	def map[A,B](ma: F[A])(f: A => B): F[B] = 
 		flatMap(ma)(a => unit(f(a)))
-	def map2[A, B, C](ma: F[A], mb: F[B])(f: (A,B) => C): F[C] = {
-		println("ma: " + ma + " , mb: " + mb)
-		val res = flatMap(ma)(a => map(mb)(b => f(a, b)))
-		println("res: " + res)
-		res
-	}
+	def map2[A, B, C](ma: F[A], mb: F[B])(f: (A,B) => C): F[C] = 
+		flatMap(ma)(a => map(mb)(b => f(a, b)))
 
-	/*Wrong answerfor sequence due to http://stackoverflow.com/a/20037817/409976
-	def sequence[A](lma: List[F[A]]): F[List[A]] = 
-		F(lma.flatten)
-
-	def traverse[A,B](la: List[A])(f: A => F[B]): F[List[B]] =
-		F(la.flatMap(f))*/
+	/* Wrong answers originally for sequence & traverse due to http://stackoverflow.com/a/20037817/409976 */
 
 	// Exercise 3: implement sequence() and traverse
 	// official answer from @pchiusano
@@ -30,13 +21,13 @@ trait Monad[F[_]] extends Functor[F] {
 	def traverse[A, B](la: List[A])(f: A => F[B]): F[List[B]] =
 		la.foldRight(unit(List[B]()))((ma, mla) => map2(f(ma), mla)(_ :: _))
 
-	// Implement repliacateM
+	def replicateOnce[A](ma: F[A]): F[List[A]] = {
+		map(ma)(x => List(x))
+	}
+
+	// Exercise 4: implement replicateM
 	def replicateM[A](n: Int, ma: F[A]): F[List[A]] = {
-		def go(n_: Int, acc: F[List[A]]): F[List[A]] = n_ match {
-				case 0 => acc
-				case _ => go(n_-1, acc sequence()
-			}
-		}
+		sequence(List.fill(n)(ma))
 	}
 }
 
@@ -86,6 +77,16 @@ object MonadTest {
 		def bar(x: Int): Option[String] = Some(x.toString)
 		val traverseRes = optionMonad.traverse(listInt)(bar)
 		println(traverseRes)
+		assert(traverseRes == Some(List("3", "2", "1")))
+
+		val x = Some(2)
+		val replicateOnceRes = optionMonad.replicateOnce(x)
+		println(replicateOnceRes)
+		assert(replicateOnceRes == Some(List(2)))
+
+		val replicateRes = optionMonad.replicateM(3, x)
+		println(replicateRes)
+		assert(replicateRes == Some(List(2,2,2)))
 	}
 
 
