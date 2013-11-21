@@ -1,0 +1,27 @@
+testOnly TestScalaCheck
+update
+reload
+testOnly TestScalaCheck
+test
+testOnly test.TestScalaCheck
+testOnly TestScalaCheck
+test-only TestScalaCheck
+test
+reload
+update
+test
+test-only TestScalacheck
+test-only TestScalaCheck
+testOnly TestScalaCheck
+test
+compile
+clean
+compile
+test
+reload
+update
+test
+clean
+test
+compile
+run
