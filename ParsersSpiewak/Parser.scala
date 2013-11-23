@@ -31,5 +31,9 @@ object RegexpParsers {
 		val s: Stream[Character] = Stream('f', 'o', 'o')
 		val res = keyword("foo")
 		println("res: " + res(s))
+
+		val s2: Stream[Character] = Stream('f', 'o', 'o', 'b', 'a', 'r')
+		val res2 = keyword("foo")
+		println("res: " + res(s2))
 	}
 }
