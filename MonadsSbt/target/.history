@@ -25,3 +25,17 @@ clean
 test
 compile
 run
+compile
+test
+compile
+test
+compile
+test
+compile
+test
+compile
+test
+exit
+clean
+compile
+test-only TestMonadLaws

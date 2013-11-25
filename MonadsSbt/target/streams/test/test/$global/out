@@ -1,6 +1,0 @@
-[0m[[0mdebug[0m] [0mRunning TaskDef(TestScalaCheck, sbt.SubclassFingerprintWrapper@5ce0f92, false, [SuiteSelector])[0m
-[0m[[0mdebug[0m] [0mSummary for ScalaCheck not available.[0m
-[0m[[0mdebug[0m] [0mSummary for ScalaTest not available.[0m
-[0m[[0minfo[0m] [0mPassed: Total 1, Failed 0, Errors 0, Passed 1[0m
-[0m[[0mdebug[0m] [0mPassed tests:[0m
-[0m[[0mdebug[0m] [0m	TestScalaCheck[0m
