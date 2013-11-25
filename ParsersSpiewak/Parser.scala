@@ -26,14 +26,33 @@ object RegexpParsers {
 		}
 	}
 
+class SequenceParser[+A, +B](l: =>Parser[A],
+							 r: =>Parser[B]) extends Parser[(A, B)] {
+	lazy val left = l
+	lazy val right = r
+
+	def apply(s: Stream[Character]) = left(s) match {
+		case Success(a, rem) => right(rem) match {
+			case Success(b, rem) => Success((a,b), rem)
+			case f: Failure => f
+		}
+		case f: Failure => f
+	}
+}
+
 
 	def main(args: Array[String]) = {
+		//testing simple parser
 		val s: Stream[Character] = Stream('f', 'o', 'o')
-		val res = keyword("foo")
-		println("res: " + res(s))
+		val p1 = keyword("foo")
+		println("p1(s): " + p1(s))
 
 		val s2: Stream[Character] = Stream('f', 'o', 'o', 'b', 'a', 'r')
-		val res2 = keyword("foo")
-		println("res: " + res(s2))
+		val p2 = keyword("bar")
+		println("p2(s): " + p2(s2))
+
+		// testing parser sequence
+		val seqPar = new SequenceParser(p1, p2)
+		println("seqPar: " + seqPar(s2))
 	}
 }
