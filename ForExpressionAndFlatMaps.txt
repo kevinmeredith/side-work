@@ -1,0 +1,25 @@
+// REPL to convert for-expression to map/flatMap
+
+scala> val strs = List("asdf", "basd", "XXX")
+strs: List[String] = List(asdf, basd, XXX)
+
+scala> for {
+     | s <- strs
+     | i <- ins.map(_ * 10)
+     | } yield (s, i)
+res0: List[(String, Int)] = List((asdf,10), (asdf,20), (asdf,30), (basd,10), (basd,20), (basd,30), (XXX,10), (XXX,20), (XXX,30))
+
+// Note that a map *does not* preserve the internal order
+scala> strs.map(s => ins.map(_ * 10).map(i => (s,i)))
+res1: List[List[(String, Int)]] = List(List((asdf,10), (asdf,20), (asdf,30)), List((basd,10), (basd,20), (basd,30)), List((XXX,10), (XXX,20), (XXX,30)
+))
+
+// Use *flatMap* to preserve the external and internal order since flatMap will *flatten* the internals
+scala> strs.flatMap(s => ins.map(_ * 10).map(i => (s,i)))
+res2: List[(String, Int)] = List((asdf,10), (asdf,20), (asdf,30), (basd,10), (basd,20), (basd,30), (XXX,10), (XXX,20), (XXX,30))
+
+scala> strs.map(s => ins.map(i => (s, i)))
+res3: List[List[(String, Int)]] = List(List((asdf,1), (asdf,2), (asdf,3)), List((basd,1), (basd,2), (basd,3)), List((XXX,1), (XXX,2), (XXX,3)))
+
+scala> "foo".flatMap(x => List(1,2).map(y => (x, y)))
+res4: scala.collection.immutable.IndexedSeq[(Char, Int)] = Vector((f,1), (f,2), (o,1), (o,2), (o,1), (o,2))
