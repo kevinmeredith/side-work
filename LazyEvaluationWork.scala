@@ -5,7 +5,7 @@ object LazyEvaluationWork {
 		def z = { print("z"); 3} 		// evaluated upon function cal
 
 		z + y + x + z + y + x
-		// print output: x z y z
+		// print output: xzyz12
 	}
 
 	
@@ -17,6 +17,6 @@ object LazyEvaluationWork {
 	}
 
 	def main(args: Array[String]) = { 
-		println(expr2) // prints "fooafter x's definition5"
+		println(expr) // prints "fooafter x's definition5"
 	}
 }
