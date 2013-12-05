@@ -51,12 +51,8 @@ trait Monad[F[_]] extends Functor[F] {
 
 	// Exercise 13: There is a third minimal set of monadic combinators: map, 
 	// unit, and join. Implement join.
+	// Confused as to why flatMap can be used if join, map and unit are 3 combinators
 	def join[A](mma: F[F[A]]): F[A] = 
-		map(mma)(f: F[A] => A)
-
-	/*
-	def unit[A](a: => A): F[A]
-	def map[A,B](ma: F[A])(f: A => B): F[B] = 
-		flatMap(ma)(a => unit(f(a)))*/
+		flatMap(mma)(ma => ma)
 
 }
