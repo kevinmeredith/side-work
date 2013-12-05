@@ -8,8 +8,10 @@ trait Monad[F[_]] extends Functor[F] {
 
 	def map[A,B](ma: F[A])(f: A => B): F[B] = 
 		flatMap(ma)(a => unit(f(a)))
-	def map2[A, B, C](ma: F[A], mb: F[B])(f: (A,B) => C): F[C] = 
+	def map2[A, B, C](ma: F[A], mb: F[B])(f: (A,B) => C): F[C] =  {
+		println("ma: " + ma + ", mb: " + mb)
 		flatMap(ma)(a => map(mb)(b => f(a, b)))
+	}
 
 	/* Wrong answers originally for sequence & traverse due to http://stackoverflow.com/a/20037817/409976 */
 
@@ -29,80 +31,32 @@ trait Monad[F[_]] extends Functor[F] {
 	// Exercise 4: implement replicateM
 	def replicateM[A](n: Int, ma: F[A]): F[List[A]] = 
 			sequence(List.fill(n)(ma))
-}
 
-object MonadTest {
-	/*val genMonad = new Monad[Gen] {
-		def unit[A](a: => A): Gen[A] = Gen.unit(a)
-		def flatMap[A, B](ma: Gen[A])(f: A => Gen[B]) = 
-			ma.flatMap(f)
-	}*/
-
-	val optionMonad = new Monad[Option] {
-		def unit[A](a: => A): Option[A] = Some(a)
-		def flatMap[A, B](ma: Option[A])(f: A => Option[B]) = 
-			ma.flatMap(f) // note ma's type - Option[A]
+	// Exercise 9: Implement this "compose" function
+	// @author pchiusano
+	def compose[A, B, C](f: A => F[B], g: B => F[C]): A => F[C] = {
+		a => flatMap(f(a))(g)
 	}
 
-	val streamMonad = new Monad[Stream] {
-		def unit[A](a: => A): Stream[A] = Stream(a)
-		def flatMap[A, B](ma: Stream[A])(f: A => Stream[B]) = 
-			ma.flatMap(f)
-	}
+	// Exercise 12: Rewrite these monad identity laws in terms of flatMap
+	// compose(f, unit) == f
+	// compose(unit, f) == f
+	// @author pchiusano
+	compose(f, unit) == f 			// for all functions f
+	a => flatMap(f(a))(unit) == f   // for all functions f
+	flatMap(x)(unit) == x           // for all values x
 
-	val listMonad = new Monad[List] {
-		def unit[A](a: => A): List[A] = List(a)
-		def flatMap[A, B](ma: List[A])(f: A => List[B]) = 
-			ma.flatMap(f)
-	}
+	compose(unit, f) == f 			// for all functions f
+	a => flatMap(unit)(f(a) == f) 	// for all functions f and all values x
 
-	def main(args: Array[String]) = {
-		val optUnit5 = optionMonad.unit(5)
-		println(optUnit5)
-		assert(optUnit5 == Some(5))
+	// Exercise 13: There is a third minimal set of monadic combinators: map, 
+	// unit, and join. Implement join.
+	def join[A](mma: F[F[A]]): F[A] = 
+		map(mma)(f: F[A] => A)
 
-		def foo(x: Int): Option[String] = Some(x.toString)
-		val optFlatMap = optionMonad.flatMap(Some(10))(foo)
-		println(optFlatMap)
-		val expected: Option[String] = Some("10")
-		assert(optFlatMap == expected)
+	/*
+	def unit[A](a: => A): F[A]
+	def map[A,B](ma: F[A])(f: A => B): F[B] = 
+		flatMap(ma)(a => unit(f(a)))*/
 
-		val listOpts = List(Some(1), None, Some(2))
-		val seqRes = optionMonad.sequence(listOpts)
-		val expected2 = None // having a `None` results in flatMap's call to return None for `acc` & total
-		println(seqRes)
-		assert(seqRes == expected2)
-
-		val listInt = List(3,2,1)
-		def bar(x: Int): Option[String] = Some(x.toString)
-		val traverseRes = optionMonad.traverse(listInt)(bar)
-		println(traverseRes)
-		assert(traverseRes == Some(List("3", "2", "1")))
-
-		val x = Some(2)
-		val replicateOnceRes = optionMonad.replicateOnce(x)
-		println(replicateOnceRes)
-		assert(replicateOnceRes == Some(List(2)))
-
-		val replicateRes = optionMonad.replicateM(3, x)
-		println(replicateRes)
-		assert(replicateRes == Some(List(2,2,2)))
-
-		val list = List(1)
-		val replicateListRes = listMonad.replicateM(2, list)
-		println(replicateListRes)
-		val expectedList = List(List(1, 1))
-		assert(replicateListRes == expectedList)
-
-		val stream = Stream("hello", "world")
-		val replicateStrRes = streamMonad.replicateM(1, stream)
-		replicateStrRes.last
-		println(replicateStrRes)
-	}
-
-
-	/*val parMonad = new Monad[Par] {
-		def unit[A](a: => A) = Par.unit(a)
-		def flatMap[A, B](ma: Par[A])(f: A => Par[B]): Par[B] = Par.flatmap(ma)(f)
-	}*/
 }
