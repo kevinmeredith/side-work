@@ -6,7 +6,7 @@ import _root_.org.scalatest._
 
 class TestMonadLaws extends FlatSpec with Matchers {
 
-	"Calling join on List(1,2,3) with x => List(x)" should "result in List(10, 20, 30)" in {
+	/*"Calling join on List(1,2,3) with x => List(x)" should "result in List(10, 20, 30)" in {
 		val list: List[Int] = List(1,2,3)
 		def f(x: Int) = List(x*10)
     val expected = List(10, 20, 30)
@@ -15,7 +15,7 @@ class TestMonadLaws extends FlatSpec with Matchers {
     println("result: " + result)
     println("expected: " + expected)
     assert(result == expected)
-	}
+	} */
 
 	/*"the for expression" should "match the map" in {
 		val genOrder: Gen[Order] = for {
