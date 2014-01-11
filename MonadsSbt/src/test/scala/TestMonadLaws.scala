@@ -3,7 +3,7 @@ import org.scalatest._
 
 class TestMonadLaws extends FlatSpec {
 	
-case class Order(item: Item, quantity: Int)
+/*case class Order(item: Item, quantity: Int)
 case class Item(name: String, price: Double)
 
 val str = List("foo")
@@ -23,7 +23,7 @@ val str = List("foo")
 												  .map(quantity => Order(Item(name, price), quantity))))
 
 		println("map " + genOrder)
-	}
+	}*/
 	/*
 	val genItem: Gen[Item] = for {
 		name <- Gen.stringN(3)
