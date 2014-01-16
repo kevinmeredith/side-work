@@ -60,13 +60,15 @@ trait Applicative[F[_]] extends Functor[F] {
       def unit[A](a: => A): (F[A], G[A]) = (self.unit(a), G.unit(a))
       override def apply[A,B](fs: (F[A => B], G[A => B]))(p: (F[A], G[A])) =
         (self.apply(fs._1)(p._1), G.apply(fs._2)(p._2))
-      override def map2[A,B,C](fa: (F[A], G[A]), fb: (F[B], G[B]))(f: (A,B) => C): (F[C], G[C]) = {
+
+      /*override def map2[A,B,C](fa: (F[A], G[A]), fb: (F[B], G[B]))(f: (A,B) => C): (F[C], G[C]) = {
+
         val x: (F[A], F[B]) = (fa._1, fb._1)
         val y: (G[A], G[B]) = (fa._2, fb._2)
-        val f: F[C] = map(x)(f.tupled)
-        val g: G[C] = map(y)(f.tupled)
-        (f, g)
-      }
+        val fc: F[C] = map(x)(f.tupled)
+        val gc: G[C] = map(y)(f.tupled)
+        (fc, gc)
+      }*/
     }
   }
 }
