@@ -54,6 +54,10 @@ trait Applicative[F[_]] extends Functor[F] {
     d
   }
 
+  def sequenceMap[K, V](ofa: Map[K,F[V]]): F[Map[K, V]] =
+    ofa.foldLeft(unit(Map[K,V]()))((x, y) => map2(x, y._2)((a, b) => (a + (y._1 -> b))))
+
+  /* TODO: figure out how to write map2
   def product[G[_]](G: Applicative[G]): Applicative[({type f[x] = (F[x], G[x])})#f] = {
     val self = this
     new Applicative[({type f[x] = (F[x], G[x])})#f] {
@@ -70,6 +74,6 @@ trait Applicative[F[_]] extends Functor[F] {
         (fc, gc)
       }*/
     }
-  }
+  }   */
 }
 
