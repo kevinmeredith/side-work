@@ -32,8 +32,19 @@ object Work {
     go(1, 1, count, Stream[Long](1))
   }
 
+  def fibCountBefore4Mil: Long = {
+    @tailrec
+    def go(x: Long): Long = {
+      if(fib(x).exists{ x => x > 4000000} ) x - 1
+      else go(x + 1)
+    }
+    go(1)
+  }
+
   def problem2: Long = {
-    fib(4000000000L).filter{x => x % 2 == 0}.foldLeft(0L)(_+_)
+    val fibs = fib(fibCountBefore4Mil)
+    //val y = fibs.map{x => if(x > 4000000) 0 else x}.map{x => if(x % 2 == 0) x else 0}
+    fibs.filter{x => x % 2 == 0}.foldLeft(0L)(_ + _)
   }
 
   // TODO: memoize primes
