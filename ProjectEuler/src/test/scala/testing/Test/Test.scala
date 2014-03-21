@@ -22,7 +22,7 @@ class Test extends FlatSpec {
     println(result)
     assert(result == List[Long](1, 2, 3, 5, 8, 13,  21, 34, 55, 89))
   }*/
- /*
+
   "find largest prime factor of 33" should "equal 11" in {
     val result = Work.largestPrime(33)
     println(result)
@@ -46,9 +46,9 @@ class Test extends FlatSpec {
     println(result)
     assert(result.get == 29)
   }
-        */
-  /*"find largest prime factor of 600851475143" should "equal ..." in {
+
+  "find largest prime factor of 600851475143" should "equal ..." in {
     val result = Work.largestPrime(600851475143L)
     println(result)
-  } */
+  }
 }

@@ -48,17 +48,19 @@ object Work {
   }
 
   // TODO: memoize primes
-  // val primes = scala.collection.mutable.HashSet[Long]()
+  val primes = scala.collection.mutable.HashSet[Long]()
 
   /**
    * The prime factors of 13195 are 5, 7, 13 and 29. What is the
    * largest prime factor of the number 600851475143?
    */
   def isPrime(x: Long): Boolean = {
-    if(x <= 1) false
+    println("is prime?: " + x)
+    if(x < 2) false
+    if(primes.contains(x)) true
     @tailrec
     def go(p: Long): Boolean = p match {
-      case 1 => true    // only divisible by 1 (and itself)
+      case 1 => primes.add(p); true    // only divisible by 1 (and itself)
       case a if x % a == 0 => false
       case _ => go(p - 1)
     }
