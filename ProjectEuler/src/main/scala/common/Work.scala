@@ -56,22 +56,24 @@ object Work {
    */
   def isPrime(x: Long): Boolean = {
     println("is prime?: " + x)
+    val halfPlus1 = (x / 2L) + 1L // a number can't be divisible by half of its value + 1
+                                  // example: 14 can never be divisible by 8.
     if(x < 2) false
     if(primes.contains(x)) true
     @tailrec
     def go(p: Long): Boolean = p match {
-      case 1 => primes.add(p); true    // only divisible by 1 (and itself)
+      case a if a == halfPlus1 => primes.add(p); true    // only divisible by 1 (and itself)
       case a if x % a == 0 => false
-      case _ => go(p - 1)
+      case _ => go(p + 1)
     }
-    go(x - 1)
+    go(2)
   }
 
   def largestPrime(x: Long): Option[Long] = {
     @tailrec
     def go(p: Long): Option[Long] = p match {
       case a if a < 2 => None
-      case a if (isPrime(a) && x % a == 0) => Some(a)
+      case a if (x % a == 0 && isPrime(a)) => Some(a)
       case _ => go(p - 1)
     }
     go(x - 1)
