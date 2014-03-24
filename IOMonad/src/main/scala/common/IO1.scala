@@ -21,6 +21,18 @@ object IO1 {
   case class Suspend[A](resume: () => IO[A]) extends IO[A]
   case class FlatMap[A, B](sub: IO[A], k: A => IO[B]) extends IO[B]
 
+  @annotation.tailrec
+  def run[A](io: IO[A]): A = io match {
+    case Return(a) => a
+    case Suspend(r) => run(r())
+    case FlatMap(x, f) => x match {
+      case Return(a) => run(f(a))
+      case Suspend(r) => run(FlatMap(r(), f))
+      case FlatMap(y, g) =>
+          run(FlatMap(y, (a: Any) => FlatMap(g(a), f)))
+    }
+  }
+
   object IO extends Monad[IO]{
     def unit[A](a: => A): IO[A] = new IO[A] { def run = a }
     def flatMap[A,B](fa: IO[A])(f: A => IO[B]) = fa flatMap f
