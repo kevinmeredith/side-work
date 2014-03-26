@@ -47,11 +47,10 @@ object Work {
     fibs.filter{x => x % 2 == 0}.foldLeft(0L)(_ + _)
   }
 
-  // TODO: memoize primes
   val primes = scala.collection.mutable.HashSet[Long]()
 
   /**
-   * The prime factors of 13195 are 5, 7, 13 and 29. What is the
+   * Problem 3. The prime factors of 13195 are 5, 7, 13 and 29. What is the
    * largest prime factor of the number 600851475143?
    */
   def isPrime(x: Long): Boolean = {
@@ -77,5 +76,68 @@ object Work {
       case _ => go(p - 1)
     }
     go(x - 1)
+  }
+
+  /**
+   * Problem 4. A palindromic number reads the same both ways. The largest palindrome made
+   *   from the product of two 2-digit numbers is 9009 = 91 × 99.
+   * Find the largest palindrome made from the product of two 3-digit numbers.
+   */
+  def getLargestPalindromeForXDigits(x: Int): Long = {
+    val ps = getXDigitProducts(x)
+    assert(ps.contains(9009))
+    val pals = ps.filter{a => isPalindrome(a.toString)}
+
+    pals.foldLeft(0L) {
+      (acc, elem) => if(elem > acc) elem
+                     else acc
+    }
+  }
+
+  // TODO: see Sobral's answer on SO
+  //http://stackoverflow.com/questions/22593362/outofmemory-exception-when-creating-stream-of-3-digit-products
+  def getXDigitProducts(x: Int): Stream[Long] = {
+    val MAX = Math.pow(10, x)
+    @tailrec
+    def go(outer: Int, inner: Int, acc: Stream[Long]): Stream[Long] = (outer, inner) match {
+      case (MAX, _) => acc
+      case (_, MAX) => println("outer:" + outer); go(outer + 1, 1, acc)
+      case (_, _)   => go(outer, inner + 1, Stream[Long](outer * inner) ++ acc)
+    }
+    go(1, 1, Stream[Long]())
+  }
+
+  def isPalindrome(x: String) = x == x.reverse
+
+  def getXDigitProductsTry(x: Int): Stream[Long] = {
+    val MAX = Math.pow(10, x)
+
+    def go(outer: Int, inner: Int, product: Stream[Long]): Stream[Long] = {
+      if(outer == MAX) product
+      else if(inner == MAX) go(outer + 1, 1, product)
+      else (outer * inner) #:: go(outer, inner + 1, product)
+    }
+    go(1, 1, Stream[Long]())
+  }
+
+  /**
+   * Problem 5.
+   * 2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+   * What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+   */
+
+  def smallestNumDivByXNumbers(count: Int): Option[Int] = {
+     val inf = Stream.from(1)
+     inf.find(a => isDivByX(a, count))
+  }
+
+  def isDivByX(num: Int, count: Int): Boolean = {
+    @annotation.tailrec
+    def go(x: Int, n: Int): Boolean = n match {
+      case 1 => println("x is divisible: $x"); true
+      case _ if x % n == 0 => println(s"x($x) divisible by n($n)"); go(x, n - 1)
+      case _ => println(s"x($x) is not divisible by n($n)"); false
+    }
+    go(num, count)
   }
 }
