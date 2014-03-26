@@ -47,8 +47,19 @@ class Test extends FlatSpec {
     assert(result.get == 29)
   }
 
-  "find largest prime factor of 600851475143" should "equal ..." in {
+  /*"find largest prime factor of 600851475143" should "equal ..." in {
     val result = Work.largestPrime(600851475143L)
+    println(result)
+  } */
+
+  "find largest palindrome for product of 2 digit numbers" should "equal 9009" in {
+    val result = Work.getLargestPalindromeForXDigits(2)
+    println(result)
+    assert(result == 9009)
+  }
+
+  "find largest palindrome for product of 3 digit numbers" should "equal ???" in {
+    val result = Work.getLargestPalindromeForXDigits(3)
     println(result)
   }
 }
