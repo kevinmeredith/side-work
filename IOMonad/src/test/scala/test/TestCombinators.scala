@@ -27,12 +27,34 @@ class TestCombinators extends FlatSpec {
     listCombinator.forever(List(1))
   } */
 
-  "running IO.forever" should "NOT result in a StackOverflow" in {
+  /*"running IO.forever" should "NOT result in a StackOverflow" in {
     import common.IO1.{Suspend, Return}
+
     def printLine(s: String): IO[Unit] =
       Suspend( () => Return(println(s)))
+
     val p: IO[String] = IO.forever(printLine("still going..."))
     common.IO1.run(p)
   }
 
+  "example" should "show a StackOverflow exception" in {
+    import common.IO1.{Suspend, Return}
+    def printLine(s: String): IO[Unit] =
+      Suspend( () => Return(println(s)))
+
+    val actions: Stream[IO[Unit]] =
+      Stream.fill(1000000)(printLine("Still going..."))
+    val composite: IO[Unit] =
+      actions.foldLeft(Return(())) { (acc, a) => acc flatMap { _ => a} }
+  }*/
+
+  "trampolining" should "successfully complete" in {
+    import common.IO1.{Suspend, Return}
+    val f: Int => IO[Int] = (x: Int) => Return(x)
+    val g = List.fill(1)(f).foldLeft(f) {
+      (acc, elem) => x => Suspend(() => acc(x).flatMap(elem))
+    }
+    println(common.IO1.run(g(0)))
+    println(common.IO1.run(g(42)))
+  }
 }
