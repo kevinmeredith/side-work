@@ -50,7 +50,7 @@ class Test extends FlatSpec {
   /*"find largest prime factor of 600851475143" should "equal ..." in {
     val result = Work.largestPrime(600851475143L)
     println(result)
-  } */
+  }
 
   "find largest palindrome for product of 2 digit numbers" should "equal 9009" in {
     val result = Work.getLargestPalindromeForXDigits(2)
@@ -60,6 +60,17 @@ class Test extends FlatSpec {
 
   "find largest palindrome for product of 3 digit numbers" should "equal ???" in {
     val result = Work.getLargestPalindromeForXDigits(3)
+    println(result)
+  }
+
+  "find smallest number divisible by 1 ... 10" should "return 2520" in {
+    val result = Work.smallestNumDivByXNumbers(10, 1)
+    println(result)
+    assert(result.get == 2520)
+  } */
+
+ "find smallest number divisible by 1 ... 20" should "return ???" in {
+    val result = Work.smallestNumDivByXNumbers(20, 2000)
     println(result)
   }
 }

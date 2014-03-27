@@ -126,9 +126,14 @@ object Work {
    * What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
    */
 
-  def smallestNumDivByXNumbers(count: Int): Option[Int] = {
-     val inf = Stream.from(1)
-     inf.find(a => isDivByX(a, count))
+  def smallestNumDivByXNumbers(count: Int, start: Int): Option[Int] = {
+    @tailrec
+    def go(x: Int): Option[Int] = x match {
+      case _ if isDivByX(x, count) => Some(x)
+      case Long.MaxValue => None
+      case _ => go(x+1)
+    }
+    go(start)
   }
 
   def isDivByX(num: Int, count: Int): Boolean = {
