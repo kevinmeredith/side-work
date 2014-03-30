@@ -182,4 +182,38 @@ object Work {
     go(2, 0)
   }
 
+  /**
+   * Problem 8. Find the greatest product of five consecutive digits in the 1000-digit number.
+   * TODO: Copy the long number from Project Euler site
+   */
+
+  def numberToListWithIndividualtems(x: Long): List[Int] = {
+    val strings: List[String] = x.toString.split("").toList
+
+    // Converting each maybe string digit into a Some[Long] or None
+    def getMaybeNumber(x: String): Option[Int] = {
+      if (x.matches("[0-9]+")) Some(x.toInt)   // TODO: verify reg-ex
+      else None
+    }
+
+    strings.flatMap(getMaybeNumber)
+  }
+
+  def getMaxProductForNConsecutive(n: Int, list: List[Int]): Long = {
+    @annotation.tailrec
+    def go(as: List[Int], acc: Long): Long = as match {
+      case Nil => acc
+      case x :: xs => {
+        val temp = as.take(n).foldLeft(1L)(_*_)
+        go(xs, if (temp > acc) temp else acc)
+      }
+    }
+    go(list, 0) // Chose Int.MinValue as second arg at first, but realized max sum will be 9*5 (99999)
+  }
+
+  def problem8(n: Int, number: Long): Long = {
+    val xs = numberToListWithIndividualtems(number)
+    getMaxProductForNConsecutive(n, xs)
+  }
+
 }
