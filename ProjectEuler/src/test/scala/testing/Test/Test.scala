@@ -72,7 +72,7 @@ class Test extends FlatSpec {
  /*"find smallest number divisible by 1 ... 20" should "return ???" in {
     val result = Work.smallestNumDivByXNumbers(20, 2000)
     println(result)
-  }   */
+  }
 
   "sumSquared - sum of squares from 1 ... 10" should "equal 2640" in {
     val x = Work.sumSquared(10)
@@ -88,12 +88,18 @@ class Test extends FlatSpec {
     val z = x - y
     println(z)
     assert(z == 25164150)
-  }
+  }   */
 
   "the 6th prime number" should "equal 13" in {
     val sixthPrime = Work.findNthPrime(6)
     println(sixthPrime)
     assert(sixthPrime == 13)
+  }
+
+  "the 10,001th prime number" should "equal 104743" in {
+    val x = Work.findNthPrime(10001)
+    println(x)
+    assert(x == 104743)
   }
 
 

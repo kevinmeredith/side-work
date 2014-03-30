@@ -175,11 +175,11 @@ object Work {
     def findNthPrime(n: Int): Long = {
     @tailrec
       def go(x: Long, y: Int): Long = isPrime(x) match {
-        case false => go(x+1, y)          // not prime, recurse
-        case true if y == (n - 1) => x    // if we've already found y-1 primes, then we've now found the y'th prime
-        case _ => go(x+1, y+1)            // found a prime but n hasn't been reached
+        case false => println("false, not prime"); go(x+1, y)          // not prime, recurse
+        case true if y == (n - 1) => println(s"Found $n prime: $x"); x    // if we've already found y-1 primes, then we've now found the y'th prime
+        case true => println(s"$x prime but y = $y"); go(x+1, y+1)            // found a prime but n hasn't been reached
       }
-    go(1, 0)
+    go(2, 0)
   }
 
 }
