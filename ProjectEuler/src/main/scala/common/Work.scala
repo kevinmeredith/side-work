@@ -55,9 +55,9 @@ object Work {
    */
   def isPrime(x: Long): Boolean = {
     println("is prime?: " + x)
+    if(x < 2) false
     val halfPlus1 = (x / 2L) + 1L // a number can't be divisible by half of its value + 1
                                   // example: 14 can never be divisible by 8.
-    if(x < 2) false
     if(primes.contains(x)) true
     @tailrec
     def go(p: Long): Boolean = p match {
@@ -139,10 +139,47 @@ object Work {
   def isDivByX(num: Int, count: Int): Boolean = {
     @annotation.tailrec
     def go(x: Int, n: Int): Boolean = n match {
-      case 1 => println("x is divisible: $x"); true
-      case _ if x % n == 0 => println(s"x($x) divisible by n($n)"); go(x, n - 1)
-      case _ => println(s"x($x) is not divisible by n($n)"); false
+      case 1 => true
+      case _ if x % n == 0 => go(x, n - 1)
+      case _ => false
     }
     go(num, count)
   }
+
+  /**
+   * Problem 6. The sum of the squares of the first ten natural numbers is:
+   *    1^2 + 2^2 + ... + 10^2 = 385
+   * The sum of the square of the first ten natural numbers is:
+   *    (1 + 2 + ... + 10)^2 = 55^2 = 3025
+   * Hence the difference is 2640.
+   *
+   * Find the above for the first 100 numbers.
+   */
+
+  def sumOfSquares(end: Int): Double =
+    List.range(0,end+1).map{x => Math.pow(x, 2)}.foldLeft(0.0)(_+_)
+
+  def sumSquared(end: Int): Double =
+    Math.pow(List.range(0, end+1).foldLeft(0.0)(_+_), 2)
+
+  def squaresDiff(end: Int) =
+    sumSquared(end) - sumOfSquares(end)
+
+  /**
+   * Problem 7. By listing the first six prime numbers, we can see that
+   * the 6th prime is 13.
+   *
+   * What is the 10,001st prime number?
+   */
+
+    def findNthPrime(n: Int): Long = {
+    @tailrec
+      def go(x: Long, y: Int): Long = isPrime(x) match {
+        case false => go(x+1, y)          // not prime, recurse
+        case true if y == (n - 1) => x    // if we've already found y-1 primes, then we've now found the y'th prime
+        case _ => go(x+1, y+1)            // found a prime but n hasn't been reached
+      }
+    go(1, 0)
+  }
+
 }
