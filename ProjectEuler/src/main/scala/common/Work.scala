@@ -47,6 +47,8 @@ object Work {
     fibs.filter{x => x % 2 == 0}.foldLeft(0L)(_ + _)
   }
 
+  import scala.collection.immutable.HashSet
+
   val primes = scala.collection.mutable.HashSet[Long]()
 
   /**
@@ -56,14 +58,14 @@ object Work {
   def isPrime(x: Long): Boolean = {
     println("is prime?: " + x)
     if(x < 2) false
+    if(primes.contains(x)) true
     val halfPlus1 = (x / 2L) + 1L // a number can't be divisible by half of its value + 1
                                   // example: 14 can never be divisible by 8.
-    if(primes.contains(x)) true
     @tailrec
-    def go(p: Long): Boolean = p match {
-      case a if a == halfPlus1 => primes.add(p); true    // only divisible by 1 (and itself)
-      case a if x % a == 0 => false
-      case _ => go(p + 1)
+    def go(p: Long): Boolean = {
+      if(p == halfPlus1) { primes.add(p); true }
+      else if(x % p == 0) false
+      else go(p+1)
     }
     go(2)
   }
@@ -175,20 +177,20 @@ object Work {
     def findNthPrime(n: Int): Long = {
     @tailrec
       def go(x: Long, y: Int): Long = isPrime(x) match {
-        case false => println("false, not prime"); go(x+1, y)          // not prime, recurse
-        case true if y == (n - 1) => println(s"Found $n prime: $x"); x    // if we've already found y-1 primes, then we've now found the y'th prime
-        case true => println(s"$x prime but y = $y"); go(x+1, y+1)            // found a prime but n hasn't been reached
+        case false => go(x + 1, y)
+        case true if y == (n - 1) => x // if we've already found y-1 primes, then we've now found the y'th prime
+        case true => go(x+1, y+1)
       }
-    go(2, 0)
-  }
+      go(2, 0)
+    }
 
   /**
    * Problem 8. Find the greatest product of five consecutive digits in the 1000-digit number.
    * TODO: Copy the long number from Project Euler site
    */
 
-  def numberToListWithIndividualtems(x: Long): List[Int] = {
-    val strings: List[String] = x.toString.split("").toList
+  def stringNumToListWithIndividualtems(x: String): List[Int] = {
+    val strings: List[String] = x.split("").toList
 
     // Converting each maybe string digit into a Some[Long] or None
     def getMaybeNumber(x: String): Option[Int] = {
@@ -211,9 +213,32 @@ object Work {
     go(list, 0) // Chose Int.MinValue as second arg at first, but realized max sum will be 9*5 (99999)
   }
 
-  def problem8(n: Int, number: Long): Long = {
-    val xs = numberToListWithIndividualtems(number)
+  def problem8(n: Int, strNum: String): Long = {
+    val xs = stringNumToListWithIndividualtems(strNum)
     getMaxProductForNConsecutive(n, xs)
   }
 
+  /**
+   * Problem 9. Find the product of abc of Pythagorean Triple where a + b + c = 1000
+   * Remember PT: a < b < c where a^2 + b^2 = c^2
+   */
+  /*def findPythagoreanTriple: Option[(Int, Int, Int)] = {
+    def go(a: Int, b: Int): Option[(Int, Int, Int)] = (a,b) match {
+      case (Int.MaxValue, _) => None
+      case (_, Int.MaxValue) => go(a+1, a+2)
+      case (_,_)
+      //if(Math.sqrt(a*b).toString.matches("[1-9]+[0-9]+.[0]+")) => Some(a,b,Math.sqrt(a*b).toInt)
+      case _ => go(a, b+1)
+    }
+    go(2, 3)
+  } */
+
+  /*def findPythagoreanTriple: Option[(Int, Int, Int)] = {
+    def go(a: Int, b: Int): Option[(Int, Int, Int)] = {
+      if(a == Int.MaxValue) None
+      else if(b == Int.MaxValue) => go(a+1, a+2)
+      else if(isPythTriple(a,b))
+    }
+    go(2, 3)
+  }*/
 }
